@@ -28,6 +28,8 @@ function createStore(reducer) {
     switch (action.type) {
       case "ADD": // Increment the count
         return { count: state.count + 1 };
+      case "SUBTRACT": // Decrement the count
+        return { count: state.count - 1 };
       default: // Return the current state if the action is unknown
         return state;
     }
@@ -36,9 +38,12 @@ function createStore(reducer) {
   // Create the store using the reducer
   const store = createStore(tallyReducer);
   
-  // SCENARIO 2: Incrementing the Counter, Dispatching an "ADD" action twice
+  // SCENARIO 3: Decrementing the Counter using simulate previous increments
   store.dispatch({ type: "ADD" }); // Increment to 1
   store.dispatch({ type: "ADD" }); // Increment to 2
   
-  // Logs the final state
+  // Dispatch a "SUBTRACT" action
+  store.dispatch({ type: "SUBTRACT" }); // Decrement to 1
+  
+  // Log the final state
   console.log("Final State:", store.getState());
