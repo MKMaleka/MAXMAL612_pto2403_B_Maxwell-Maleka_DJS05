@@ -1,49 +1,69 @@
 // Redux store
 function createStore(reducer) {
     let state; // Variable to hold the current state
+    const listeners = []; // list of subscriber functions
   
     // Method to get the current state
-    function getState() {
-      return state;
-    }
-  
-    // Method to dispatch actions (not used yet but initializes the state)
-    function dispatch(action) {
-      state = reducer(state, action); // Update state using the reducer
-    }
-  
-    // Initialize the state with a default action
-    dispatch({ type: "__INIT__" });
-  
-    // Return an object with methods to access and interact with the store
-    return {
-      getState,
-      dispatch,
-    };
-  }
-  
-  // Reducer function to handle the state
-  function tallyReducer(state = { count: 0 }, action) {
-    // Handle actions
-    switch (action.type) {
-      case "ADD": // Increment the count
-        return { count: state.count + 1 };
-      case "SUBTRACT": // Decrement the count
-        return { count: state.count - 1 };
-      case "RESET": // Reset the count to 0
-        return { count: 0 };
-      default: // Return the current state if the action is unknown
-        return state;
-    }
-  }
-  
-  // Create the store using the reducer
-  const store = createStore(tallyReducer);
+  const getState = () => state;
 
-  store.dispatch({ type: "ADD" }); // Increment to 1
-  
-  // Dispatch a RESET action
-  store.dispatch({ type: "RESET" }); // Reset to 0
-  
-  // Logs the final state
-  console.log("Final State:", store.getState()); 
+  // Method to dispatch an action and notify subscribers
+  const dispatch = (action) => {
+    // Update state using the reducer
+    state = reducer(state, action);
+
+    // Notify all subscribers about the state change
+    listeners.forEach((listener) => listener());
+  };
+
+  // Method to subscribe to state changes
+  const subscribe = (listener) => {
+    listeners.push(listener);
+
+    // Return an unsubscribe function
+    return () => {
+      const index = listeners.indexOf(listener);
+      if (index > -1) listeners.splice(index, 1);
+    };
+  };
+
+  // Initialize the state by dispatching an empty action
+  dispatch({ type: "__INIT__" });
+
+  return { getState, dispatch, subscribe };
+}
+
+// Reducer function for the tally counter
+function tallyReducer(state = { count: 0 }, action) {
+  switch (action.type) {
+    case "ADD":
+      return { ...state, count: state.count + 1 };
+    case "SUBTRACT":
+      return { ...state, count: state.count - 1 };
+    case "RESET":
+      return { ...state, count: 0 };
+    default:
+      return state;
+  }
+}
+
+// Create the store using the reducer
+const store = createStore(tallyReducer);
+
+// Subscriber function to log state changes
+store.subscribe(() => {
+  console.log("State updated:", store.getState());
+});
+
+// Test cases using the provided scenarios
+console.log("SCENARIO 1: Initial State Verification");
+console.log("Initial State:", store.getState()); // Expected: { count: 0 }
+
+console.log("\nSCENARIO 2: Incrementing the Counter");
+store.dispatch({ type: "ADD" }); // Increment to 1
+store.dispatch({ type: "ADD" }); // Increment to 2
+
+console.log("\nSCENARIO 3: Decrementing the Counter");
+store.dispatch({ type: "SUBTRACT" }); // Decrement to 1
+
+console.log("\nSCENARIO 4: Resetting the Counter");
+store.dispatch({ type: "RESET" }); // Reset to 0
