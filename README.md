@@ -1,5 +1,3 @@
-# MAXMAL612_pto2403_B_Maxwell-Maleka_DJS05
-
 ## How to run the code
 1. clone the repo via https://github.com/MKMaleka/MAXMAL612_pto2403_B_Maxwell-Maleka_DJS05.git
 2. Open the terminal and navigate to the directory containing the file.
@@ -8,7 +6,7 @@
 
 ## Overview of the Approach
 1. Reducer - A pure function that takes the current state and an action to produce the next state.
-2. Atore implementation -  The store follows a Redux-inspired architecture with getState, dispatch, and subscribe methods.
+2. Store implementation -  The store follows a Redux-inspired architecture with getState, dispatch, and subscribe methods.
 3. Subscribers (listeners) are notified whenever the state changes, demonstrating the Observer pattern.
 
 ## Challenges and Solutions
