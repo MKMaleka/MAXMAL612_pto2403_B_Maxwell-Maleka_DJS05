@@ -24,12 +24,21 @@ function createStore(reducer) {
   
   // Reducer function to handle the state
   function tallyReducer(state = { count: 0 }, action) {
-    // No actions for this scenario; return the initial state
-    return state;
+    // Handle different actions
+    switch (action.type) {
+      case "ADD": // Increment the count
+        return { count: state.count + 1 };
+      default: // Return the current state if the action is unknown
+        return state;
+    }
   }
   
   // Create the store using the reducer
   const store = createStore(tallyReducer);
   
-  // SCENARIO 1: Initial State Verification
-  console.log("Initial State:", store.getState());
+  // SCENARIO 2: Incrementing the Counter, Dispatching an "ADD" action twice
+  store.dispatch({ type: "ADD" }); // Increment to 1
+  store.dispatch({ type: "ADD" }); // Increment to 2
+  
+  // Logs the final state
+  console.log("Final State:", store.getState());
